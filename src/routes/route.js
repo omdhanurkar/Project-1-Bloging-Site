@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
-//const bookModel= require("../models/userModel.js")  //it throw an error so i had commented
-// const bookController= require("../controllers/bookController")
+const authorController=require('../controllers/authorController');
+const blogController=require('../controllers/blogController')
 
+router.post("/authors", authorController.createAuthor);
 
-
-// router.post("/createBooks", bookController.createBooks  )
-
-// router.get("/getBooksData", bookController.getBooksData)
 
 module.exports = router;
 
