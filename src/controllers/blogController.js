@@ -24,22 +24,48 @@ const createBlog = async function (req, res) {
     }
 }
 
-const getBlogs =async function(req,res){
+const getBlogs = async function (req, res) {
     try {
-        
-        // let authorId = req.query.authorId
-        // let category = req.query.category
-        // let tags = req.query.tags
-        // let subcategory = req.query.subcategory
-        let data =req.query
-        
-
-        let data1 = await BlogModel.find({$and: [data, { isDeleted: false }, { isPublished: false }]})
-        res.status(200).send({msg:data1})
+        let data = req.query
+        let data1 = await BlogModel.find({ $and: [data, { isDeleted: false }, { isPublished: true }] })
+        res.status(200).send({ msg: data1 })
     } catch (err) {
         res.status(500).send({ msg: err.message })
 
     }
 }
+
+//PUT /blogs/:blogId.
+const updateBlogs = async function (req, res) {
+    try {
+        let blogId = req.params.blogId;
+        let blogData = req.body;
+        let updateBlog = await BlogModel.findOneAndUpdate(
+            { _id: blogId, isDeleted: false },       //condition
+            {
+                $set: { title: blogData.title, body: blogData.body, isPublished: true, publishedAt: new Date() },   //want to update or push
+                $push: { tags: blogData.tags, subcategory: blogData.subcategory }
+            },
+            { new: true }
+        );
+        if (!updateBlog) {
+            res.status(404).send({ msg: 'Blog not found' })
+        }
+        res.status(200).send({ status: true, msg: updateBlog })
+
+    } catch (err) {
+        res.status(500).send({ satus: false, msg: err.message })
+    }
+};
+
+// const update = async function (req, res) {
+//     let data = await blogModel.find().updateMany({ isDeleted: false }, { $set: { isPublished: true } }, { new: true })
+//     res.status(200).send({ msg: data })
+// }
+
+//module.exports.update = update
+
+
 module.exports.createBlog = createBlog
-module.exports.getBlogs =getBlogs
+module.exports.getBlogs = getBlogs
+module.exports.updateBlogs = updateBlogs

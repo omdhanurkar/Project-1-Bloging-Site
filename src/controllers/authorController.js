@@ -14,9 +14,10 @@ const createAuthor = async function (req, res) {
         res.status(500).send({ msg: err.message })
     }
 }
+
 module.exports.createAuthor = createAuthor
 
 
-module.exports.createAuthor = createAuthor
+
 
 

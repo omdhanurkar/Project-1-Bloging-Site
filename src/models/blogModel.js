@@ -36,8 +36,5 @@ const blogSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-<<<<<<< HEAD
-module.exports = mongoose.model("Blog", blogSchema)
-=======
-module.exports = mongoose.model("Blog", blogSchema)
->>>>>>> 6b8cb64aef898a1a21e51f12138eabfcfe7ddb2a
+
+module.exports = mongoose.model("Blog", blogSchema);
