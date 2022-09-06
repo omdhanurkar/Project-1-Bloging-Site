@@ -63,9 +63,13 @@ const updateBlogs = async function (req, res) {
 const deleteblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
+         //check if the query field is empty
+         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Enter the details of blog that you would like to delete" })
+
         let blogData = await BlogModel.findOneAndUpdate(
             { _id: blogId, isDeleted: false },
             { $set: { isDeleted: true, deletedAt: new Date() } },
+            { new: true }
         );
         //check if the blogData is not found
         if (!blogData) {
@@ -78,9 +82,36 @@ const deleteblog = async function (req, res) {
 }
 //============================================================================================================================================================================================================================
 // DELETE /blogs?queryParams
+const deleteByQuery = async function (req, res) {
+    try {
+        const data = req.query
+        const category = req.query.category
+        const authorId = req.query.authorId
+        const tagName = req.query.tags
+        const subcategory = req.query.subcategory
+        const isPublished = req.query.isPublished
+
+        //check if the query field is empty
+        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Enter the details of blog that you would like to delete" })
+
+        //finding document using query params
+        const delectingBlog = await BlogModel.findOneAndUpdate({ $or: [{ category: category }, { authorId: authorId }, { tags: tagName }, { subcategory: subcategory }, { isPublished: isPublished }] },
+            { $set: { isDeleted: true, deletedAt: new Date() } })
+
+
+        if (delectingBlog == null) return res.status(404).send({ status: false, msg: "Blog not found" })
+
+        res.status(200).send({ status: true, msg: "Blog has been deleted" })
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err.message })
+    }
+}
+
 
 
 module.exports.createBlog = createBlog;
 module.exports.getBlogs = getBlogs;
 module.exports.updateBlogs = updateBlogs;
 module.exports.deleteblog = deleteblog;
+module.exports.deleteByQuery = deleteByQuery;
