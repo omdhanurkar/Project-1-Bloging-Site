@@ -23,7 +23,7 @@ const createBlog = async function (req, res) {
         res.status(500).send({ msg: err.message })
     }
 }
-
+//============================================================================================================================================================================================================================
 const getBlogs = async function (req, res) {
     try {
         let data = req.query
@@ -34,7 +34,7 @@ const getBlogs = async function (req, res) {
 
     }
 }
-
+//============================================================================================================================================================================================================================
 //PUT /blogs/:blogId.
 const updateBlogs = async function (req, res) {
     try {
@@ -58,14 +58,29 @@ const updateBlogs = async function (req, res) {
     }
 };
 
-// const update = async function (req, res) {
-//     let data = await blogModel.find().updateMany({ isDeleted: false }, { $set: { isPublished: true } }, { new: true })
-//     res.status(200).send({ msg: data })
-// }
+//============================================================================================================================================================================================================================
+//delete/blogs/:blogId
+const deleteblog = async function (req, res) {
+    try {
+        let blogId = req.params.blogId;
+        let blogData = await BlogModel.findOneAndUpdate(
+            { _id: blogId, isDeleted: false },
+            { $set: { isDeleted: true, deletedAt: new Date() } },
+        );
+        //check if the blogData is not found
+        if (!blogData) {
+            res.status(404).send({ status: false, msg: 'Blog not found' })
+        }
+        res.status(200).send({ status: true, msg: "Blog has been Deleted" })
+    } catch (err) {
+        res.status(500).send({ status: false, msg: err.message })
+    }
+}
+//============================================================================================================================================================================================================================
+// DELETE /blogs?queryParams
 
-//module.exports.update = update
 
-
-module.exports.createBlog = createBlog
-module.exports.getBlogs = getBlogs
-module.exports.updateBlogs = updateBlogs
+module.exports.createBlog = createBlog;
+module.exports.getBlogs = getBlogs;
+module.exports.updateBlogs = updateBlogs;
+module.exports.deleteblog = deleteblog;
