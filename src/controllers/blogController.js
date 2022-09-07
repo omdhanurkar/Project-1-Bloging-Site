@@ -7,6 +7,7 @@ const isValid = function (value) {
     if (typeof value === "undefined" || value === null) return false
     return true
 };
+
 //=========================================================================================================================================================================================
 const createBlog = async function (req, res) {
     try {
@@ -37,14 +38,20 @@ const createBlog = async function (req, res) {
 //============================================================================================================================================================================================================================
 const getBlogs = async function (req, res) {
     try {
-        let data = req.query
-        let data1 = await BlogModel.find({ $and: [data, { isDeleted: false }, { isPublished: true }] })
-        return res.status(200).send({ msg: data1 })
-    } catch (err) {
-        return res.status(500).send({ msg: err.message })
+        let data = req.query;
+        let getBlog = await BlogModel.find({ isPublished: true, isDeleted: false, ...data })  // distructered bcoz we will put more than 1 key in queryParams
+        if (getBlog.length == 0)
+            return res.status(404).send({ status: false, msg: "no such documents found" })
 
+        res.status(200).send({ status: true, data: getBlog })
+        // console.log(getData)
+
+    } catch (err) {
+        res.status(500).send({ status: false, msg: err.massage })
     }
 }
+
+
 //============================================================================================================================================================================================================================
 //PUT /blogs/:blogId.
 const updateBlogs = async function (req, res) {
@@ -74,9 +81,7 @@ const updateBlogs = async function (req, res) {
 const deleteblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
-        //check if the query field is empty
-        if (Object.keys(blogId).length == 0) return res.status(400).send({ status: false, msg: "Enter the details of blog that you would like to delete" })
-
+        if (!blogId) return res.status(404).send({ msg: 'BlogId not found' });
         let blogData = await BlogModel.findOneAndUpdate(
             { _id: blogId, isDeleted: false },
             { $set: { isDeleted: true, deletedAt: new Date() } },
@@ -104,6 +109,9 @@ const deleteByQuery = async function (req, res) {
 
         //check if the query field is empty
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Enter the details of blog that you would like to delete" })
+        //check if data already deleted or not
+        const findDeleted = await BlogModel.findOne(data)
+        if (findDeleted.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is already deleted" })
 
         //finding document using query params
         const delectingBlog = await BlogModel.updateMany({ $or: [{ category: category }, { authorId: authorId }, { tags: tagName }, { subcategory: subcategory }, { isPublished: isPublished }] },
@@ -111,6 +119,7 @@ const deleteByQuery = async function (req, res) {
 
 
         if (delectingBlog == null) return res.status(404).send({ status: false, msg: "Blog not found" })
+
 
         return res.status(200).send({ status: true, msg: "Blog has been deleted" })
     }
