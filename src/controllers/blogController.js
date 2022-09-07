@@ -1,14 +1,14 @@
-
 const AuthorModel = require("../models/authorModel");
 const BlogModel = require("../models/blogModel")
 
 const isValid = function (value) {
     if (typeof value === "string" && value.trim().length === 0) return false
     if (typeof value === "undefined" || value === null) return false
-    return true
+    return true; 
 };
 
-//=========================================================================================================================================================================================
+//======================================================================================================================================================================================================
+
 const createBlog = async function (req, res) {
     try {
         let data = req.body
@@ -17,9 +17,18 @@ const createBlog = async function (req, res) {
         if (Object.keys(data).length === 0) return res.status(404).send({ status: false, msg: "provide some data in body" })
 
         //checking all detail in body is correct or it might not be available
-        if (!isValid(data.title)) return res.status(404).send({ status: false, msg: "title is required" })
-        if (!isValid(data.body)) return res.status(404).send({ status: false, msg: "body is required" })
-        if (!isValid(data.authorId)) return res.status(404).send({ status: false, msg: "authorId is required" })
+        if (!isValid(data.title))
+            return res.status(404).send({ status: false, msg: "title is required" })  //
+
+        if (!(/^[a-zA-Z]+$/i).test(data.title))
+            return res.status(404).send({ status: false, msg: "title should be in alphabet format" });
+
+        if (!isValid(data.body))
+            return res.status(404).send({ status: false, msg: "body is required" })
+
+        if (!isValid(data.authorId))
+            return res.status(404).send({ status: false, msg: "authorId is required" })
+
         if (!authorId) {
             return res.status(404).send({ status: false, msg: "authorId is not found" })
         }
@@ -35,7 +44,9 @@ const createBlog = async function (req, res) {
         return res.status(500).send({ status: false, msg: err.message })
     }
 }
+
 //============================================================================================================================================================================================================================
+
 const getBlogs = async function (req, res) {
     try {
         let data = req.query;
@@ -53,6 +64,7 @@ const getBlogs = async function (req, res) {
 
 
 //============================================================================================================================================================================================================================
+
 //PUT /blogs/:blogId.
 const updateBlogs = async function (req, res) {
     try {
@@ -77,6 +89,7 @@ const updateBlogs = async function (req, res) {
 };
 
 //============================================================================================================================================================================================================================
+
 //delete/blogs/:blogId
 const deleteblog = async function (req, res) {
     try {
@@ -97,6 +110,7 @@ const deleteblog = async function (req, res) {
     }
 }
 //============================================================================================================================================================================================================================
+
 // DELETE /blogs?queryParams
 const deleteByQuery = async function (req, res) {
     try {
@@ -109,6 +123,7 @@ const deleteByQuery = async function (req, res) {
 
         //check if the query field is empty
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Enter the details of blog that you would like to delete" })
+
         //check if data already deleted or not
         const findDeleted = await BlogModel.findOne(data)
         if (findDeleted.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is already deleted" })
@@ -127,8 +142,6 @@ const deleteByQuery = async function (req, res) {
         return res.status(500).send({ status: false, msg: err.message })
     }
 }
-
-
 
 module.exports.createBlog = createBlog;
 module.exports.getBlogs = getBlogs;

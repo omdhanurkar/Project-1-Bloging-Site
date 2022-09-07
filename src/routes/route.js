@@ -5,22 +5,19 @@ const blogController = require('../controllers/blogController')
 const middleware = require('../middlewares/commonMiddleware');
 
 
+router.post("/authors", authorController.createAuthor); //Post api to create author
 
-router.post("/authors", authorController.createAuthor);
+router.post("/login", authorController.loginAuthor); //Post api to login
 
-router.get("/login",authorController.loginAuthor);
+router.post("/blogs", middleware.authenticate, blogController.createBlog);  //post api to create blog
 
-router.post("/blogs",middleware.authenticate, blogController.createBlog);
+router.get("/getBlogs", middleware.authenticate, blogController.getBlogs);  //get api to get blog
 
-router.get("/getBlogs",middleware.authenticate, blogController.getBlogs);
+router.put("/updateblogs/:blogId", middleware.authenticate, middleware.authorise, blogController.updateBlogs);  //put api to update blog
 
-router.put("/updateblogs/:blogId",middleware.authenticate, blogController.updateBlogs);
+router.delete("/deleteblogs/:blogId", middleware.authenticate, middleware.authorise, blogController, deleteblog); // delete api to delete blog
 
-router.put("/updateblogs/:blogId",middleware.authenticate, blogController.updateBlogs);
-
-router.delete("/deleteblogs/:blogId", blogController.deleteblog);
-
-router.delete("/deleteBlog",middleware.authenticate, blogController.deleteByQuery);
+router.delete("/deleteBlog", middleware.authenticate, middleware.authorise, blogController.deleteByQuery); //delete api to deleteByQuery the blog
 
 
 
