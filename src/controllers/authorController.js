@@ -48,6 +48,7 @@ const loginAuthor = async function (req, res) {
     } catch (err) {
         res.status(500).send({ status: false, err: err.message })
     }
+}
 
     module.exports.createAuthor = createAuthor
     module.exports.loginAuthor = loginAuthor
