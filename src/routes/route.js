@@ -8,7 +8,8 @@ router.post("/blogs", blogController.createBlog);
 
 router.get("/getBlogs", blogController.getBlogs);
 // router.put("/update",blogController.update)
-router.put("/deleteblogs/:blogId", blogController.updateBlogs);
+router.put("/updateblogs/:blogId", blogController.updateBlogs);
+router.delete("/deleteblogs/:blogId", blogController.deleteblog);
 
 router.delete("/deleteBlog", blogController.deleteByQuery);
 module.exports = router;
