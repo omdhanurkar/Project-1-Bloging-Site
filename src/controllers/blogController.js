@@ -4,7 +4,7 @@ const BlogModel = require("../models/blogModel")
 const isValid = function (value) {
     if (typeof value === "string" && value.trim().length === 0) return false
     if (typeof value === "undefined" || value === null) return false
-    return true; 
+    return true;
 };
 
 //======================================================================================================================================================================================================
@@ -20,8 +20,8 @@ const createBlog = async function (req, res) {
         if (!isValid(data.title))
             return res.status(404).send({ status: false, msg: "title is required" })  //
 
-        if (!(/^[a-zA-Z]+$/i).test(data.title))
-            return res.status(404).send({ status: false, msg: "title should be in alphabet format" });
+        // if (!(/^[a-zA-Z]+$/i).test(data.title))
+        //     return res.status(404).send({ status: false, msg: "title should be in alphabet format" });
 
         if (!isValid(data.body))
             return res.status(404).send({ status: false, msg: "body is required" })
@@ -29,13 +29,19 @@ const createBlog = async function (req, res) {
         if (!isValid(data.authorId))
             return res.status(404).send({ status: false, msg: "authorId is required" })
 
-        if (!authorId) {
+        if (!data.authorId) {
             return res.status(404).send({ status: false, msg: "authorId is not found" })
         }
+        if (data.authorId !== req.decodedToken.authorId) {
+            return res.status(404).send({ status: false, msg: "Can't use another authorId" })
+        }
+
         let author = await AuthorModel.findById({ _id: authorId })
         if (!author) {
             return res.status(404).send({ status: false, msg: "authorid not valid" })
         }
+
+        if (!isValid(data.category)) { return res.status(404).send({ status: false, msg: "category is required" }) }
         let blogCreated = await BlogModel.create(data)
 
         return res.status(201).send({ status: true, msg: blogCreated })
@@ -50,6 +56,7 @@ const createBlog = async function (req, res) {
 const getBlogs = async function (req, res) {
     try {
         let data = req.query;
+        if (!data) { return res.status(404).send({ status: false, msg: "No data found in query" }) }
         let getBlog = await BlogModel.find({ isPublished: true, isDeleted: false, ...data })  // distructered bcoz we will put more than 1 key in queryParams
         if (getBlog.length == 0)
             return res.status(404).send({ status: false, msg: "no such documents found" })

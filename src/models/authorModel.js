@@ -1,34 +1,35 @@
-const mongoose =require("mongoose")
+const mongoose = require("mongoose")
 
 const authorSchema = new mongoose.Schema({
-    fname:{
+    fname: {
         type: String,
         required: true
     },
-    lname:{
+    lname: {
         type: String,
         required: true
     },
-    title:{
+    title: {
         type: String,
         required: true,
-        enum:["Mr", "Mrs", "Miss"]
+        enum: ["Mr", "Mrs", "Miss"]
     },
-    email:{
+    email: {
         type: String,
         unique: true,
         required: true
     },
-    password:{
-        
+    password: {
+
         type: String,
         required: true
-    }},
+    }
+},
 
     { timestamps: true });
 
 module.exports = mongoose.model('author', authorSchema)
-   
+
 
 
 
