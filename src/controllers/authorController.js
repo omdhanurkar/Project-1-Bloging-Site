@@ -1,12 +1,11 @@
 const AuthorModel = require("../models/authorModel")
 const jwt = require("jsonwebtoken");
-const validator = require("validator");
 const authorModel = require("../models/authorModel");
 
 const isValid = function (value) {
     if (typeof value === "string" && value.trim().length === 0) return false
     if (typeof value === "undefined" || value === null) return false
-    return true
+    return true;
 };
 const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
@@ -16,8 +15,9 @@ const isValidTitle = function (title) {
 const createAuthor = async function (req, res) {
     try {
         let data = req.body;
-        if (!Object.keys(data).length)
+        if (Object.keys(data).length===0)
             return res.status(404).send({ status: false, msg: "please enter author details" });
+
         if (!isValid(data.fname))
             return res.status(404).send({ status: false, msg: "please enter first name" });
 
@@ -25,22 +25,23 @@ const createAuthor = async function (req, res) {
             return res.status(404).send({ status: false, msg: "please provide valid first name It should be in Alphabet format" });
 
         if (!isValid(data.lname))
-            return res.status(404).send({ status: false, msg: "please enter last name It should be in Alphabet format" });     //
+            return res.status(404).send({ status: false, msg: "please enter last name It should be in Alphabet format" });
 
-        if (!(/^[a-zA-Z]+$/i).test(data.fname))
+        if (!(/^[a-zA-Z]+$/i).test(data.lname))
             return res.status(404).send({ status: false, msg: "please provide valid last name" });
 
         if (!isValid(data.title))
             return res.status(404).send({ status: false, msg: "please enter title" });
 
-        if(!isValidTitle(data.title))
-        return res.status(404).send({status :false, msg:"title is mandatory" });  
+        if (!isValidTitle(data.title))
+            return res.status(404).send({ status: false, msg: "please enter valid title" });
 
         if (!isValid(data.email))
-            return res.status(404).send({ status: false, msg: "please enter email address" });  //
+            return res.status(404).send({ status: false, msg: "please enter email address" });
 
-        if (!validator.validate(data.email))
-            return res.status(404).send({ status: false, msg: "please enter valid email" })
+        if (!/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(data.email))
+            return res.status(404).send({ status: false, msg: "please enter valid email" });
+
 
         const checkusedEmail = await authorModel.findOne({ email: data.email });
         if (checkusedEmail) {
@@ -50,10 +51,13 @@ const createAuthor = async function (req, res) {
         if (!isValid(data.password))
             return res.status(404).send({ status: false, msg: "please enter password" });
 
+        if (!/^[a-zA-Z0-9@*#]{8,15}$/.test(data.password))
+            return res.status(404).send({ status: false, msg: "Please enter a valid password" });
+
         let savedData = await AuthorModel.create(data)
-        res.status(201).send({ msg: savedData })
+        res.status(201).send({ status: true, msg: savedData })
     } catch (err) {
-        res.status(500).send({ msg: err.message })
+        res.status(500).send({ status: false, msg: err.message })
     }
 }
 //========================================================================================================================================================================
@@ -73,7 +77,7 @@ const loginAuthor = async function (req, res) {
             Group: "54"
         },
             "naman,om prakash,rohan,raman"
-            )
+        )
         res.setHeader("x-api-key", token)
         res.status(200).send({ status: true, data: token })
     } catch (err) {
