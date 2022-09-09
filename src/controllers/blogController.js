@@ -32,19 +32,18 @@ const createBlog = async function (req, res) {
         if (!data.authorId) {
             return res.status(404).send({ status: false, msg: "authorId is not found" })
         }
-        if (data.authorId !== req.decodedToken.authorId) {
-            return res.status(404).send({ status: false, msg: "Can't use another authorId" })
-        }
 
         let author = await AuthorModel.findById({ _id: authorId })
         if (!author) {
             return res.status(404).send({ status: false, msg: "authorid not valid" })
         }
-
+        if (data.authorId !== req.decodedToken.authorId) {
+            return res.status(404).send({ status: false, msg: "Can't use another authorId" })
+        }
         if (!isValid(data.category)) { return res.status(404).send({ status: false, msg: "category is required" }) }
-        let blogCreated = await BlogModel.create(data)
 
-        return res.status(201).send({ status: true, msg: blogCreated })
+        let blogCreated = await BlogModel.create(data)
+        res.status(201).send({ status: true, msg: blogCreated })
 
     } catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
