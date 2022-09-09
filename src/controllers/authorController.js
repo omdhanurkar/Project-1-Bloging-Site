@@ -1,6 +1,5 @@
 const AuthorModel = require("../models/authorModel")
 const jwt = require("jsonwebtoken");
-
 const authorModel = require("../models/authorModel");
 
 
@@ -10,16 +9,10 @@ const isValid = function (value) {
     return true;
 };
 
-
 //===title should be one of the following constants ===
 const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
 }
-
-
-
-
-
 
 const createAuthor = async function (req, res) {
     try {
@@ -93,20 +86,10 @@ const loginAuthor = async function (req, res) {
             project: "mini project of blogging site",
             Group: "54"
         },
-
             "naman,om prakash,rohan,raman"
-
-
         )
         res.setHeader("x-api-key", token)
         res.status(200).send({ status: true, data: token })
-
-
-
-            "naman,omprakash,rohan,raman"
-        
-        res.setHeader("x-api-key", token)
-        res.status(201).send({ status: true, data: token })
 
     } catch (err) {
         res.status(500).send({ status: false, err: err.message })
