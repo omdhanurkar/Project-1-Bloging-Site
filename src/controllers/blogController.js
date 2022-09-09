@@ -18,10 +18,7 @@ const createBlog = async function (req, res) {
 
         //checking all detail in body is correct or it might not be available
         if (!isValid(data.title))
-            return res.status(404).send({ status: false, msg: "title is required" })  //
-
-        // if (!(/^[a-zA-Z]+$/i).test(data.title))
-        //     return res.status(404).send({ status: false, msg: "title should be in alphabet format" });
+            return res.status(404).send({ status: false, msg: "title is required" })  
 
         if (!isValid(data.body))
             return res.status(404).send({ status: false, msg: "body is required" })

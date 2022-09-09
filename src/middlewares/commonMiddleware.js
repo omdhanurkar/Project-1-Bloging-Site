@@ -13,7 +13,6 @@ const authenticate = async function (req, res, next) {
             }
             req["decodedToken"] = decodedToken
             next();   //next function is called callback function it runs when user is authenticated means it successfully login
-
         });
     }
     catch (error) {
@@ -39,7 +38,6 @@ const authorise = async function (req, res, next) {
     }
 }
 
-
 //===========================================================================================================================================================================================================================
 
 //===authorisation for deleteByQuery===
@@ -62,8 +60,7 @@ const authdeleteByQuery = async function (req, res, next) {
     }
 }
 
-
 module.exports.authenticate = authenticate;
 module.exports.authorise = authorise;
-module.exports.authdeleteByQuery = authdeleteByQuery
+module.exports.authdeleteByQuery = authdeleteByQuery;
 
