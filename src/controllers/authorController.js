@@ -28,10 +28,10 @@ const createAuthor = async function (req, res) {
             return res.status(404).send({ status: false, msg: "please provide valid first name It should be in Alphabet format" });
 
         if (!isValid(data.lname))
-            return res.status(404).send({ status: false, msg: "please enter valid last name It should be in Alphabet format" });
+            return res.status(404).send({ status: false, msg: "please enter last name" });
 
         if (!(/^[a-zA-Z]+$/i).test(data.lname))
-            return res.status(404).send({ status: false, msg: "please provide valid last name" });
+            return res.status(404).send({ status: false, msg: "please enter valid last name It should be in Alphabet format" });
 
         if (!isValid(data.title))
             return res.status(404).send({ status: false, msg: "please enter title" });
