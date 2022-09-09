@@ -15,7 +15,7 @@ router.get("/getBlogs", middleware.authenticate, blogController.getBlogs);  //ge
 
 router.put("/updateblogs/:blogId", middleware.authenticate, middleware.authorise, blogController.updateBlogs);  //put api to update blog
 
-router.delete("/deleteblogs/:blogId", middleware.authenticate, middleware.authorise, blogController, deleteblog); // delete api to delete blog
+ router.delete("/deleteblogs/:blogId", middleware.authenticate, middleware.authorise, blogController.deleteblog); // delete api to delete blog
 
 router.delete("/deleteBlog", middleware.authenticate, middleware.authorise, blogController.deleteByQuery); //delete api to deleteByQuery the blog
 
