@@ -18,7 +18,8 @@ const createBlog = async function (req, res) {
 
         //checking all detail in body is correct or it might not be available
         if (!isValid(data.title))
-            return res.status(404).send({ status: false, msg: "title is required" })  
+            return res.status(404).send({ status: false, msg: "title is required" })  //
+
 
         if (!isValid(data.body))
             return res.status(404).send({ status: false, msg: "body is required" })
@@ -34,13 +35,14 @@ const createBlog = async function (req, res) {
         if (!author) {
             return res.status(404).send({ status: false, msg: "authorid not valid" })
         }
+
         if (data.authorId !== req.decodedToken.authorId) {
             return res.status(404).send({ status: false, msg: "Can't use another authorId" })
         }
+        
         if (!isValid(data.category)) { return res.status(404).send({ status: false, msg: "category is required" }) }
-
         let blogCreated = await BlogModel.create(data)
-        res.status(201).send({ status: true, msg: blogCreated })
+        return res.status(201).send({ status: true, msg: blogCreated })
 
     } catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
