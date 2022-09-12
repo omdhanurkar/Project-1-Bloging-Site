@@ -5,11 +5,11 @@ const BlogModel = require("../models/blogModel");
 const authenticate = async function (req, res, next) {
     try {
         let token = req.headers["x-api-key"]
-        if (!token) res.status(400).send({ status: false, message: "token is required" });
+        if (!token) return res.status(400).send({ status: false, message: "token is required" });
 
         let decodedToken = jwt.verify(token, "naman,omprakash,rohan,raman", (error, decodedToken) => {
             if (error) {
-                res.status(401).send({ status: false, message: "token is invalid" });
+                return res.status(401).send({ status: false, message: "token is invalid" });
             }
             req["decodedToken"] = decodedToken
             next();   //next function is called callback function it runs when user is authenticated means it successfully login
@@ -17,7 +17,7 @@ const authenticate = async function (req, res, next) {
         });
     }
     catch (error) {
-        res.status(500).send({ status: false, message: error.message });
+        return res.status(500).send({ status: false, message: error.message });
 
     }
 }
@@ -35,7 +35,7 @@ const authorise = async function (req, res, next) {
         next()
     }
     catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, msg: error.message })
     }
 }
 
@@ -46,7 +46,7 @@ const authorise = async function (req, res, next) {
 
 const authdeleteByQuery = async function (req, res, next) {
     try {
-        let Data = req.query
+        let Data = req.q6
         let blogs = await BlogModel.find(Data)
         if (blogs.length == 0) {
             return res.status(404).send({ status: false, msg: "No blogs found" })

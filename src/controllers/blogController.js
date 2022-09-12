@@ -39,7 +39,7 @@ const createBlog = async function (req, res) {
         if (data.authorId !== req.decodedToken.authorId) {
             return res.status(404).send({ status: false, msg: "Can't use another authorId" })
         }
-        
+
         if (!isValid(data.category)) { return res.status(404).send({ status: false, msg: "category is required" }) }
         let blogCreated = await BlogModel.create(data)
         return res.status(201).send({ status: true, msg: blogCreated })
@@ -55,15 +55,15 @@ const getBlogs = async function (req, res) {
     try {
         let data = req.query;
         if (!data) { return res.status(404).send({ status: false, msg: "No data found in query" }) }
-        let getBlog = await BlogModel.find({ isPublished: true, isDeleted: false, ...data })  // distructered bcoz we will put more than 1 key in queryParams
+        let getBlog = await BlogModel.find({ isPublished: true, isDeleted: false, ...data })         // distructered bcoz we will put more than 1 key in queryParams
         if (getBlog.length == 0)
             return res.status(404).send({ status: false, msg: "no such documents found" })
 
-        res.status(200).send({ status: true, data: getBlog })
+        return res.status(200).send({ status: true, data: getBlog })
         // console.log(getData)
 
     } catch (err) {
-        res.status(500).send({ status: false, msg: err.massage })
+        return res.status(500).send({ status: false, msg: err.massage })
     }
 }
 
