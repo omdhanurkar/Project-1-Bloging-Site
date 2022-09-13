@@ -104,9 +104,6 @@ const deleteblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
         if (!blogId) return res.status(404).send({ message: 'BlogId not found' });
-        if (!isValidObjectId(blogId)) {
-            return res.status(400).send({ status: false, message: "please provide a valid blogId" })
-        }
         let blogData = await BlogModel.findOneAndUpdate(
             { _id: blogId, isDeleted: false },
             { $set: { isDeleted: true, deletedAt: new Date() } },
