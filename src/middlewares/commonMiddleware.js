@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 const BlogModel = require("../models/blogModel");
+const mongoose = require("mongoose");
+
+
 
 //==Athontication====
 const authenticate = async function (req, res, next) {
@@ -27,15 +30,19 @@ const authenticate = async function (req, res, next) {
 const authorise = async function (req, res, next) {
     try {
         let blogToBeModified = req.params.blogId
+        if (!mongoose.isValidObjectId(blogToBeModified)) {
+            return res.status(400).send({ status: false, msg: 'Please enter correct blogId Id' })
+        }
         let authorLoggedIn = req.decodedToken.authorId
         let blogData = await BlogModel.findById(blogToBeModified)
+        if (blogData === null) return res.status(404).send({ status: false, message: "blogId does not exist" });
         if (blogData.authorId != authorLoggedIn) {
-            return res.status(403).send({ status: false, msg: "you are not authorized" })
+            return res.status(403).send({ status: false, message: "you are not authorized" })
         }
         next()
     }
     catch (error) {
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -46,19 +53,19 @@ const authorise = async function (req, res, next) {
 
 const authdeleteByQuery = async function (req, res, next) {
     try {
-        let Data = req.q6
+        let Data = req.query
         let blogs = await BlogModel.find(Data)
         if (blogs.length == 0) {
-            return res.status(404).send({ status: false, msg: "No blogs found" })
+            return res.status(404).send({ status: false, message: "No blogs found" })
         }
         let authorLoggedIn = req.decodedToken.authorId
         const authCheck = blogs.filter(blog => blog.authorId.toString() === authorLoggedIn);
         if (authCheck.length == 0) {
-            return res.status(403).send({ status: false, msg: "Not Authorised" })
+            return res.status(403).send({ status: false, message: "Not Authorised" })
         }
         next()
     } catch (err) {
-        return res.status(500).send({ status: false, msg: err.message })
+        return res.status(500).send({ status: false, message: err.message })
     }
 }
 
